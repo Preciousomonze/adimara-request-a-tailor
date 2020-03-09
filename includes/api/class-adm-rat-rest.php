@@ -2,14 +2,14 @@
 /**
  * Ajax and Api stuff here
  */
-class ADM_RAT_REST_Api extends WP_REST_Controller{
+class ADM_RAT_REST extends WP_REST_Controller{
 
     /**
      * Endpoint namespace.
      *
      * @var string
      */
-    protected $namespace = 'adm_rat/v1/';
+    protected $namespace = 'adm_rat/v1';
 
     /**
      * METHOD
@@ -23,23 +23,23 @@ class ADM_RAT_REST_Api extends WP_REST_Controller{
      *
      * @var string
      */
-    protected $rest_base = 'measurement';
+    protected $rest_base = '/measurement/';
 
     public function __construct(){
         /*api calling */
-        add_action( 'rest_api_init', array($this,'register_routes'));
+        add_action( 'rest_api_init', array( $this, 'register_routes' ) );
     }
 
     /**
      * Registers routes :)
      */
     public function register_routes() {
-        register_rest_route( $this->namespace, 'request_tailor/', array(
+        register_rest_route( $this->namespace, $this->rest_base.'request_tailor/', array(
         'methods' => $this->method,
-        'callback' => array($this,'submit_request_tailor'),
-        'permission_callback' => array($this,'get_permission')
+        'callback' => array( $this, 'submit_request_tailor' ),
+        'permission_callback' => array( $this,'get_permission' )
         ) );
-    }
+	}
     
     /**
      * Handles Submission of request tailor
@@ -116,12 +116,16 @@ class ADM_RAT_REST_Api extends WP_REST_Controller{
 	 * Checks if the api request is valid 
 	 * @return bool true if valid,false otherwise
 	 */
-    public function get_permission(){
-        $result = true;
-        $nonce = $_POST['nonce'];
-        if(wp_verify_nonce( $nonce, 'wp_rest' ) == false)
-            $result = false;
-        return $result;
-    }
+	public function get_permission(){
+		global $adm_pk_ajax_nonce;
+		$result = true;
+		$nonce = $_REQUEST['security'];//use this since we're using both get and post
+		if( is_user_logged_in() ){
+			if( wp_verify_nonce( $nonce, $adm_pk_ajax_nonce ) == false ){
+				$result = false;
+			}
+		}
+		return $result;
+	}
 }
-new ADM_RAT_REST_Api();
+new ADM_RAT_REST();

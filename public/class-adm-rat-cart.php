@@ -65,8 +65,9 @@ class ADM_RAT_Cart{
 		 * @param string deleteRequest (optiona) if true, a submitted tailor request will be reverted
 		 */
 		function adm_rat_submit_tailor_request( product_id, nonce, cartRequestTailor = false, deleteRequest = "false"){
-			$('.adm-measure-pop').fadeIn('slow');
-			$('.adm-measure-pop .inside').append('<div class="blanket center"><a href="#no-click" class="adm-nice-load-feel"><i class="fa fa-gear fa-spin fa-2x"></i></a> </div>');
+			$cart_element = $( '.cart.woocommerce-cart-form__contents' );
+			$cart_element.addClass('adm-make-relative');
+			$cart_element.append('<div class="blanket center"><a href="#no-click" class="adm-nice-load-feel"><i class="fa fa-gear fa-spin fa-2x"></i></a> </div>');
 			//for the nice load stuff
 			$('.adm-nice-load-feel').click(function(e){
 				e.preventDefault();
@@ -100,6 +101,7 @@ class ADM_RAT_Cart{
 			})
 			.always(function(response) {
 				$('.adm-measure-pop .blanket').remove();
+				$cart_element.removeClass( 'adm-make-relative' );
 			});
 
 		}

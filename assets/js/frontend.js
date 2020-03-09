@@ -10,7 +10,7 @@ $(document).ready(function(){
 		var product_id = res[1];
 		var nonce = res[2];
 		var deleteRequest = res[3]; // If we need to unrequest or request a tailor
-		adm_pk_loadMeasurementPop( product_id, nonce, false, deleteRequest );
+		adm_rat_submit_tailor_request( product_id, nonce, false, deleteRequest );
 	
 	});
 	
@@ -21,7 +21,7 @@ $(document).ready(function(){
 		var product_id = 0;
 		var nonce = res[2];
 		var deleteRequest = res[3]; // If we need to unrequest or request a tailor
-		adm_pk_loadMeasurementPop( product_id, nonce, true, deleteRequest );
+		adm_rat_submit_tailor_request( product_id, nonce, true, deleteRequest );
 	
 	});
 	
