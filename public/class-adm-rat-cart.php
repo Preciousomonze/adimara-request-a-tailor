@@ -9,7 +9,7 @@ class ADM_RAT_Cart{
      */
     public function __construct(){
 		add_action( 'adm_pk_after_popup', array( $this, 'item_data_script' ), 10, 2 );
-		add_action( 'adm_pk_add_item_data', array( $this, 'add_item_data' ), 10, 2 );
+		add_filter( 'adm_pk_add_item_data', array( $this, 'add_item_data' ), 10, 2 );
 	}
 
     /**
