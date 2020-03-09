@@ -2,10 +2,10 @@
 /**
  * Plugin Name: Adimara Request a Tailor
  * Plugin URI: 
- * Description: A WordPress Plugin Add-on for the Adimara measurement plugin, which helps in the creation of a button called "Request Tailor Measurement" placed beneath the "enter measurement". The RTM button will enable the customer skip the process of entering their measurements for the item(s).
+ * Description: A WordPress Plugin Add-on for the Adimara measurement plugin, which helps in the creation of a button called "Request Tailor Measurement" placed beneath the "enter measurement". The RTM button will enable the customer skip the process of entering their measurements for the item(s). <br><strong>Note: This plugin will not work without "Adimara Measurement Extension" plugin</strong>.
  * Author: Precious Omonze (CodeXplorer 🤓🦜 )
  * Author URI: https://codeexplorer.ninja
- * Version: 1.0
+ * Version: 1.0.0
  * Requires at least: 4.9
  * Tested up to: 5.3
  * WC requires at least: 3.0
@@ -24,18 +24,14 @@ define('ADM_RAT_TEXT_DOMAIN', 'adimara');
 define('ADM_RAT_PLUGIN_VERSION','1.0.0');
 
 
-// include dependencies file
-if(!class_exists('ADM_RAT_Dependencies')){
-    include_once dirname(__FILE__) . '/includes/class-wc-pv-deps.php';
-}
 // Include the main class.
 if(!class_exists('ADM_RAT')){
-    include_once dirname(__FILE__) . '/includes/class-wc-pv.php';
+    include_once dirname(__FILE__) . '/includes/class-adm-rat.php';
 }
-function adm_rat_init(){
+function adm_rat(){
     return ADM_RAT::instance();
 }
 
-add_action( 'adm_pk_init', 'adm_rat_init');
+add_action( 'adm_pk_init', 'adm_rat');
 
-$GLOBALS['adm_rat'] = adm_rat_init();
+$GLOBALS['adm_rat'] = adm_rat();
