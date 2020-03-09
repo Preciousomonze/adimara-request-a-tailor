@@ -22,28 +22,29 @@ Class ADM_RAT_Checkout{
  	 */
 	public function add_request_tailor_data_to_order_items( $item, $cart_item_key, $values, $order ) {
 		$cart_item_data = adm_pk_woo_get_item_data($cart_item_key);
-		if ( empty( $cart_item_data['_adm_request_tailor'] ) ) {
+		$request_value = isset( $cart_item_data['_adm_request_tailor'] ) ? trim( $cart_item_data['_adm_request_tailor'] ) : '';
+		if ( empty( $request_value ) ) {
 			return;
 		}
 
 		$cloth_type = '<span class="adm-cloth-type">'.$cart_item_data['_cloth_type'].'</span>';
-		$value = '<span class="adm-unit">'.().'</span>';
+		$value = '<span class="adm-unit">'.( $request_value === true ? 'Yes' : 'No' ).'</span>';
 		//done now add :)
-		$item->add_meta_data( __( '_request_tailor', ADM_RAT_TEXT_DOMAIN ), $unit);
+		$item->add_meta_data( __( '_request_tailor', ADM_RAT_TEXT_DOMAIN ), $value);
 		
-		// hook filter since request tailor is true
-		add_filter( 'adm_pk_item_request_tailor', array( $this, 'request_tailor_on_item' ), 10, 2 );
+		// hook filter since request tailor has been initt
+		/**
+		 * A template like function which sets bool value on item for request tailor
+		 * @param WC_Order_Item_Product $item
+		 * @param string                $cart_item_key
+		 * @hook filter 				adm_pk_item_request_tailor
+		 * @return 						bool
+		 */
+		add_filter( 'adm_pk_item_request_tailor', function( $item, $cart_item_key ){
+			global $request_value;
+			return $request_value;
+		}, 10, 2 );
 	}
-	
-	/**
-	 * A template like function which sets bool value on item for request tailor
-	 * @param WC_Order_Item_Product $item
-	 * @param string                $cart_item_key
-	 * @hook filter adm_pk_item_request_tailor
-	 * @return bool
-	 */
-	public function request_tailor_on_item( $item, $cart_item_key ){
-		return true;
-	}
+
 }
 new ADM_RAT_Checkout();

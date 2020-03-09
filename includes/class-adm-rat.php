@@ -63,8 +63,8 @@ final class ADM_RAT{
      * @param string $type
      * @return bool
      */
-    private function is_request($type) {
-        switch ($type) {
+    private function is_request( $type ) {
+        switch ( $type ) {
             case 'admin' :
                 return is_admin();
             case 'ajax' :
@@ -80,15 +80,16 @@ final class ADM_RAT{
      * load plugin files
      */
     public function includes() {
-        //if ($this->is_request('admin')) {}
-        if ($this->is_request('frontend')) {
+        if ( $this->is_request( 'frontend' ) ) {
             include_once( ADM_RAT_ABSPATH . 'public/class-adm-rat-cart.php' );
             include_once( ADM_RAT_ABSPATH . 'public/class-adm-rat-checkout.php' );
-			include_once( ADM_RAT_ABSPATH . 'public/class-adm-rat-rest.php' );
+			include_once( ADM_RAT_ABSPATH . 'includes/api/class-adm-rat-rest.php' );
 			//enqueue js
 			 add_action( 'wp_enqueue_scripts', array($this,'enqueue_js' ) );
         }
-        //if ($this->is_request('ajax')) {}
+		//include for all
+		include_once( ADM_RAT_ABSPATH . 'includes/class-adm-rat-orders.php' );
+		
     }
     
     /**

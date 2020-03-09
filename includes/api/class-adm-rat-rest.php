@@ -58,7 +58,7 @@ class ADM_RAT_REST_Api extends WP_REST_Controller{
 		add_filter( 'adm_pk_item_request_tailor', function( $cart_item_data ){
 			global $delete_request;
 			//if its a delete request, set request tailor to false, else true
-			return ( $delete_request === true ? "false" : "true" );
+			return ( $delete_request === true ? 'false' : 'true' );
 		}, 10, 1 );
 
         // Calling some useful hommies in the cart_features.php file in main adimara measurement plugin :)

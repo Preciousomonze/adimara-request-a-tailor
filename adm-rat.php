@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Adimara Request a Tailor
- * Plugin URI: https://github.com/Preciousomonze/adimara-request-a-tailor
- * Description: A WordPress Plugin Add-on for the Adimara measurement plugin, which helps in the creation of a button called "Request Tailor Measurement" placed beneath the "enter measurement". The RTM button will enable the customer skip the process of entering their measurements and go straight to payment.
+ * Plugin URI: 
+ * Description: A WordPress Plugin Add-on for the Adimara measurement plugin, which helps in the creation of a button called "Request Tailor Measurement" placed beneath the "enter measurement". The RTM button will enable the customer skip the process of entering their measurements for the item(s).
  * Author: Precious Omonze (CodeXplorer 🤓🦜 )
  * Author URI: https://codeexplorer.ninja
  * Version: 1.0
