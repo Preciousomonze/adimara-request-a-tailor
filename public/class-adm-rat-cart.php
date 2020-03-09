@@ -8,8 +8,8 @@ class ADM_RAT_Cart{
      * Construcdur :)
      */
     public function __construct(){
-		add_action( 'adm_pk_after_popup', array( $this, 'item_data_script' ) );
-		add_action( 'adm_pk_add_item_data', array( $this, 'add_item_data' ) );
+		add_action( 'adm_pk_after_popup', array( $this, 'item_data_script' ), 10, 2 );
+		add_action( 'adm_pk_add_item_data', array( $this, 'add_item_data' ), 10, 2 );
 	}
 
     /**
@@ -45,14 +45,13 @@ class ADM_RAT_Cart{
 	 /**
 	  * Shows popup in cart 
 	  *
+	  * @param string $s_wc_cart_data
+	  * @param string $s_wc_cart_session
+	  *
 	  * @hook action adm_pk_after_popup
 	 */
-	public function item_data_script(){ 
+	public function item_data_script( $s_wc_cart_data, $s_wc_cart_session ){ 
 		global $adm_pk_ajax_nonce;
-		$wc_cart_data = WC()->cart->get_cart();
-		$wc_cart_session = WC()->session;
-		$s_wc_cart_data = adm_pk_serializer( json_encode($wc_cart_data) );
-		$s_wc_cart_session = adm_pk_serializer($wc_cart_session);
 		?>
 		<script>
 			//holds the ajax url
