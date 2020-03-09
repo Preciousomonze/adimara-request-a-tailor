@@ -17,7 +17,7 @@ final class ADM_RAT{
      * @return class object
      */
     public static function instance() {
-        if (is_null(self::$_instance)) {
+        if( is_null(self::$_instance) ) {
             self::$_instance = new self();
         }
         return self::$_instance;
@@ -27,8 +27,9 @@ final class ADM_RAT{
      * Class constructor
      */
     public function __construct() {
-            $this->define_constants();//define the constants
-            $this->includes();//include relevant files
+        $this->define_constants();//define the constants
+        $this->includes();//include relevant files
+		
     }
 
     /**
@@ -38,7 +39,7 @@ final class ADM_RAT{
         $this->define('ADM_RAT_ABSPATH', dirname(ADM_RAT_PLUGIN_FILE) . '/');
         $this->define('ADM_RAT_PLUGIN_FILE', plugin_basename(ADM_RAT_PLUGIN_FILE));
         $this->define('ADM_RAT_ASSETS_PATH', plugins_url('assets/',__FILE__));
-        if(defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ){
+        if( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ){
             $this->define('ADM_RAT_MIN_SUFFIX', '');
 		}
         else{
@@ -52,8 +53,8 @@ final class ADM_RAT{
      * @param mixed $value
      */
     private function define($name, $value) {
-        if (!defined($name)) {
-            define($name, $value);
+        if ( !defined( $name ) ) {
+            define( $name, $value );
         }
     }
 
@@ -81,12 +82,26 @@ final class ADM_RAT{
     public function includes() {
         //if ($this->is_request('admin')) {}
         if ($this->is_request('frontend')) {
-            include_once( ADM_RAT_ABSPATH . 'public/class-woocommerce-checkout.php' );
-            include_once( ADM_RAT_ABSPATH . 'public/class-woocommerce-account.php' );
+            include_once( ADM_RAT_ABSPATH . 'public/class-adm-rat-cart.php' );
+            include_once( ADM_RAT_ABSPATH . 'public/class-adm-rat-checkout.php' );
+			include_once( ADM_RAT_ABSPATH . 'public/class-adm-rat-rest.php' );
+			//enqueue js
+			 add_action( 'wp_enqueue_scripts', array($this,'enqueue_js' ) );
         }
         //if ($this->is_request('ajax')) {}
     }
+    
+    /**
+     * enqueues all necessary scripts
+     */
+    public function enqueue_js(){
+        //wp_enqueue_script('NameMySccript','path/to/MyScript','dependencies_MyScript', 'VersionMyScript', 'InfooterTrueorFalse');
+        $script_dep = array('adm_pk_js-script');
+        wp_register_script('adm_rat_js-script',adm_rat()->plugin_url().'/assets/js/frontend'.ADM_RAT_MIN_SUFFIX.'.js',$script_dep,ADM_RAT_PLUGIN_VERSION,true);
 
+		wp_enqueue_script('adm_rat_js-script');
+    }
+	
     /**
      * Plugin url
      * @return string path

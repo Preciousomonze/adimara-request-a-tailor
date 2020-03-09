@@ -8,7 +8,8 @@ class ADM_RAT_Cart{
      * Construcdur :)
      */
     public function __construct(){
-    
+		add_action( 'adm_pk_after_popup', array( $this, 'item_data_script' ) );
+		add_action( 'adm_pk_add_item_data', array( $this, 'add_item_data' ) );
 	}
 
     /**
@@ -27,10 +28,10 @@ class ADM_RAT_Cart{
         //check if the item has been measured already
         $measured_class = 'adm-not-measured-look';
         $measure_data = adm_pk_woo_get_item_data($cart_item['key']);
-		$js_tailor_delete_request = false;
+		$js_tailor_delete_request = 'false';
         if( isset($measure_data) && $measure_data['_adm_request_tailor'] === true ){
             $measured_class = 'adm-measured-look';
-			$js_tailor_delete_request = true;
+			$js_tailor_delete_request = 'true';
         }
         $item_data[] = array(
 		    'key'     => __( 'adm_rat_btn', ADM_PK_TEXT_DOMAIN ),
@@ -41,9 +42,13 @@ class ADM_RAT_Cart{
     }
 	
 	
-	 /**shows popup in cart */
-	function item_data_script(){ 
-		global $adm_pk_rest_measurement_link,$adm_pk_ajax_nonce;
+	 /**
+	  * Shows popup in cart 
+	  *
+	  * @hook action adm_pk_after_popup
+	 */
+	public function item_data_script(){ 
+		global $adm_pk_ajax_nonce;
 		$wc_cart_data = WC()->cart->get_cart();
 		$wc_cart_session = WC()->session;
 		$s_wc_cart_data = adm_pk_serializer( json_encode($wc_cart_data) );
@@ -53,13 +58,14 @@ class ADM_RAT_Cart{
 			//holds the ajax url
 			var adm_rat_request_tailor_submit = <?php echo wp_json_encode(rest_url('adm_rat/v1/measurement/request_tailor/'));?>;
 		/**
-		 * for loading the measurements
+		 * For submitting request tailor.
+		 *
 		 * @param int product_id
 		 * @param string nonce the wp stuff
 		 * @param bool cartRequestTailor (optional) if request tailor is for all cart items, default is false
-		 * @param bool deleteRequest (optiona) if true, a submitted tailor request will be reverted
+		 * @param string deleteRequest (optiona) if true, a submitted tailor request will be reverted
 		 */
-		function adm_rat_submit_tailor_request( product_id, nonce, cartRequestTailor = false, deleteRequest = false){
+		function adm_rat_submit_tailor_request( product_id, nonce, cartRequestTailor = false, deleteRequest = "false"){
 			$('.adm-measure-pop').fadeIn('slow');
 			$('.adm-measure-pop .inside').append('<div class="blanket center"><a href="#no-click" class="adm-nice-load-feel"><i class="fa fa-gear fa-spin fa-2x"></i></a> </div>');
 			//for the nice load stuff
@@ -82,8 +88,9 @@ class ADM_RAT_Cart{
 					'adm_product_id': product_id,
 					'security' : nonce,
 					'c_d': '<?php echo $s_wc_cart_data; ?>',
-					'c_s': '<?php echo $s_wc_cart_session; ?>'
-					'adm_request_tailor_all': cartRequestTailor
+					'c_s': '<?php echo $s_wc_cart_session; ?>',
+					'adm_request_tailor_all': cartRequestTailor,
+					'adm_remove_request': deleteRequest
 				}
 			} )
 			.done(function(response) {
