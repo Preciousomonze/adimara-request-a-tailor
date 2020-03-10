@@ -59,7 +59,7 @@ class ADM_RAT_REST extends WP_REST_Controller{
 		add_filter( 'adm_pk_item_request_tailor', function( $value, $cart_item_data ){
 			global $delete_request;
 			//if its a delete request, set request tailor to false, else true
-			return ( $delete_request === true ? 'false' : 'true' );
+			return ( $delete_request === 'true' ? 'false' : 'true' );
 		}, 10, 2 );
 
         // Calling some useful hommies in the cart_features.php file in main adimara measurement plugin :)
@@ -67,25 +67,9 @@ class ADM_RAT_REST extends WP_REST_Controller{
 
 		// Now check if the apply to similar wasnt checked.
         $got_value = false;
-        $_the_scripts = '';
-        if( $_apply_to_all !== true ){//only update this item
-            foreach( $cart_items as $cart_item ){
-				if( $cart_item['product_id'] == $p_id ){//what we're looking for		
-					/* $cart_item_data,$product_id,$variation_id,$measure_vals,$unit,$apply_to,$cloth_type,$cart_session */
-					apply_filters('adm_rat_woocommerce_add_cart_item_data',$cart_item,$p_id,$v_id,$input_vals,$unit,$_apply_to_similar,$cloth_type,$wc_cart_session);
-					
-					$got_value = true;
-					
-					// Update the button color for "enter measurement" and "request a tailor"
-					$_the_scripts .= "$('#_adm_rat-".$p_id."-".$security."-".$delete_request."').removeClass('adm-not-measured-look');";
-					$_the_scripts .= "$('#_adm_rat-".$p_id."-".$security."-".$delete_request."').addClass('adm-measured-look');";
-					$_the_scripts .= "alert('Request Tailor for this item has been set successfully!');";
-					break;//no longer need, break
-                }
-            }
-
-        }
-        else{//all
+        $_the_scripts = 'Setting \"Request Tailor\" for all respective items has been set successfully!';
+        if( $_apply_to_all === 'true' ){// Update all.
+			$_alert_content = '';
             foreach( $cart_items as $cart_item ){
                 $c_p_id = $cart_item['product_id'];
 				
@@ -93,20 +77,40 @@ class ADM_RAT_REST extends WP_REST_Controller{
 				$meta_val = trim( get_post_meta( $c_p_id, $adm_pk_prod_cat, true ) );
 				
 				if( !empty( $meta_val ) ){
-					/* $cart_item_data,$product_id,$variation_id,$measure_vals,$unit,$apply_to,$cloth_type */
-					apply_filters('adm_rat_woocommerce_add_cart_item_data',$cart_item,$c_p_id,$v_id,$input_vals,$unit,$_apply_to_similar,$cloth_type,$wc_cart_session);
-					/*$cart_item_data,$cart_item_session_data, $cart_item_key*/
+					/* $cart_item_data,$product_id,$variation_id,$measure_vals,$unit,$apply_to,$cloth_type,$cart_session */
+					apply_filters( 'adm_rat_woocommerce_add_cart_item_data', $cart_item, $c_p_id, null, null, null, null, null, $wc_cart_session );
+
 					$got_value = true;
+
 					// Update the button color for "enter measurement" and "request a tailor"
 					$_the_scripts .= "$('#_adm_rat-".$c_p_id."-".$security."-".$delete_request."').removeClass('adm-not-measured-look');";
 					$_the_scripts .= "$('#_adm_rat-".$c_p_id."-".$security."-".$delete_request."').addClass('adm-measured-look');";
-					$_the_scripts .= "alert('Setting \"Request Tailor\" for all respective items has been set successfully!');";
 				}
 
             }
+			// Avoid repeating, so put outside the loop.
+			$_the_scripts .= "alert('".$_alert_content."');";	
+        }
+
+        else{// Only update this item.
+			$_alert_content = 'Request Tailor for this item has been set successfully!';
+            foreach( $cart_items as $cart_item ){
+				if( $cart_item['product_id'] == $p_id ){//what we're looking for		
+					/* $cart_item_data,$product_id,$variation_id,$measure_vals,$unit,$apply_to,$cloth_type,$cart_session */
+					apply_filters( 'adm_rat_woocommerce_add_cart_item_data', $cart_item, $p_id, null, null, null, null, null, $wc_cart_session );
+					
+					$got_value = true;
+					
+					// Update the button color for "enter measurement" and "request a tailor"
+					$_the_scripts .= "$('#_adm_rat-".$p_id."-".$security."-".$delete_request."').removeClass('adm-not-measured-look');";
+					$_the_scripts .= "$('#_adm_rat-".$p_id."-".$security."-".$delete_request."').addClass('adm-measured-look');";
+					$_the_scripts .= "alert('".$alert_content."');";
+					break;//no longer need, break
+                }
+            }
         }
         if( $got_value ){ // Hurray,kill script to prevent that weird null coming out
-            // Run script to update the btn colour.
+            // Run script to update the btn colour and stuff.
             echo '<script type="text/javascript">'.$_the_scripts.'</script>';
             die();
         }

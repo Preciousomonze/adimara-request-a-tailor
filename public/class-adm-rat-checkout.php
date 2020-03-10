@@ -8,7 +8,6 @@ Class ADM_RAT_Checkout{
      * Construcdur :)
      */
     public function __construct(){
-		
 		add_action( 'woocommerce_checkout_create_order_line_item', array( $this, 'add_request_tailor_data_to_order_items' ), 10, 4 );
     }
     
@@ -32,7 +31,7 @@ Class ADM_RAT_Checkout{
 		//done now add :)
 		$item->add_meta_data( __( '_request_tailor', ADM_RAT_TEXT_DOMAIN ), $value);
 		
-		// hook filter since request tailor has been initt
+		// hook filter since request tailor has been in it
 		/**
 		 * A template like function which sets bool value on item for request tailor
 		 * @param mixed 				$value
