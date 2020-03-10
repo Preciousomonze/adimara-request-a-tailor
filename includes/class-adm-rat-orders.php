@@ -23,7 +23,7 @@ Class ADM_RAT_Orders{
 	 * @return array
  	 */
 	public function add_order_item_meta_list( $list_array, $item_id, $item ) {
-		$request_val = wc_get_order_item_meta( $item_id, '_request_tailor', true);
+		$request_val = wc_get_order_item_meta( $item_id, '_request_tailor', true );
 	
 		// Overide list array since we dont need the old data
 		$list_array = array(
