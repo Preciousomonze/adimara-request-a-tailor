@@ -5,7 +5,7 @@
 class ADM_RAT_Cart{
 	
 	/**
-	 * Keep account of active request tailor items to paint bulk button.
+	 * Keep account of active request tailor items to know if to paint bulk button.
 	 * @var int
 	 */
 	private $rat_active_count = 0;
@@ -43,7 +43,7 @@ class ADM_RAT_Cart{
 		
 		// heck if the item has been measured already.
         $measure_data = adm_pk_woo_get_item_data( $cart_item['key'] );
-		var_dump($measure_data);
+		
 		// Some variables to affect html.
 		$measured_class = 'adm-not-measured-look';
         $js_tailor_delete_request = 'false';
@@ -51,7 +51,7 @@ class ADM_RAT_Cart{
 		$rat_btn_text = 'Request a Tailor';
 		++$this->rat_count;
 		
-        if( isset($measure_data) && $measure_data['_adm_request_tailor'] === 'true' ){
+        if( isset( $measure_data ) && $measure_data['_adm_request_tailor'] === 'true' ){
             $measured_class = 'adm-measured-look';
 			$js_tailor_delete_request = 'true';
 			$rat_title = 'Delete your \"Request a tailor\" for this item.';
@@ -73,24 +73,27 @@ class ADM_RAT_Cart{
 	 * Displays the bulk button.
 	 */
 	public function display_bulk_button_to_cart(){
-		global $adm_pk_ajax_nonce;// the ajax nonce variable
-        $ajax_nonce = wp_create_nonce( $adm_pk_ajax_nonce );
-		
-		$measured_class = 'adm-not-measured-look';
-		$js_tailor_delete_request = 'false';
-		$rat_title = 'Request a tailor for all respective items and skip entering measurement.';
-		$rat_btn_text = 'Request a Tailor for all items';
-		
-		// If the active count is equal, time for bulk reverse.
-        if( $this->rat_count > 0 && ( $this->rat_count == $this->rat_active_count ) ){
-            $measured_class = 'adm-measured-look';
-			$js_tailor_delete_request = 'true';
-			$rat_title = 'Delete your \"Request a tailor\" for all respectibe items in your cart.';
-			$rat_btn_text = 'Unrequest a Tailor for all items';
+		// If rat products are in cart, then show
+		if( $this->rat_count > 0 ){
+			global $adm_pk_ajax_nonce;// the ajax nonce variable
+			$ajax_nonce = wp_create_nonce( $adm_pk_ajax_nonce );
+
+			$measured_class = 'adm-not-measured-look';
+			$js_tailor_delete_request = 'false';
+			$rat_title = 'Request a tailor for all respective items and skip entering measurement.';
+			$rat_btn_text = 'Request a Tailor for all items';
+
+			// If the active count is equal, time for bulk reverse.
+			if( $this->rat_count === $this->rat_active_count ){
+				$measured_class = 'adm-measured-look';
+				$js_tailor_delete_request = 'true';
+				$rat_title = 'Delete your \"Request a tailor\" for all respectibe items in your cart.';
+				$rat_btn_text = 'Unrequest a Tailor for all items';
+			}
+
+			$btn = '<a id="_adm_rat-0-'.$ajax_nonce.'-'.$js_tailor_delete_request.'" href="#adm-rat-request-all" class="btn bulk btn-feel adm-measure-btn '.$measured_class.'" title="'.$rat_title.'">'.$rat_btn_text.'</a>';
+			echo $btn;
 		}
-		//var_dump($this->rat_count);
-		$btn = '<a id="_adm_rat-0-'.$ajax_nonce.'-'.$js_tailor_delete_request.'" href="#adm-rat-request-all" class="btn bulk btn-feel adm-measure-btn '.$measured_class.'" title="'.$rat_title.'">'.$rat_btn_text.'</a>';
-		echo $btn;
 	}
 	
 	 /**

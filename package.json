@@ -17,7 +17,7 @@
     "bugs": {
         "url": "https://github.com/Preciousomonze/adimara-request-a-tailor/issues"
     },
-    "version": "2.1.0",
+    "version": "1.0.0",
     "devDependencies": {
         "gh-release": "^3.5.0",
         "grunt": "^1.0.4",

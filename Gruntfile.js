@@ -20,7 +20,7 @@ module.exports = function(grunt) {
 			build: {
 				files: [{
 					expand: true, // Enable dynamic expansion.
-					src: ['assets/js/name-your-price.js', 'assets/js/admin/nyp-metabox.js', 'assets/js/admin/nyp-quick-edit.js'], // Actual pattern(s) to match.
+					src: ['assets/js/frontend.js'], // Actual pattern(s) to match.
 					ext: '.min.js', // Dest filepaths will have this extension.
 				}, ]
 			}
@@ -33,21 +33,7 @@ module.exports = function(grunt) {
 				},
 				'-W020': true, //Read only - error when assigning EO_SCRIPT_DEBUG a value.
 			},
-			all: ['js/*.js', '!js/*.min.js', 'admin/js/*.js', '!admin/js/*.min.js']
-		},
-
-		// Sass
-		sass: {
-			options: {
-				implementation: sass,
-				sourceMap: false,
-				outputStyle: 'compact'
-			},
-			dist: {
-				files: { // Dictionary of files
-					'assets/css/name-your-price.css': 'assets/css/name-your-price.scss'       // 'destination': 'source'
-				}
-			}
+			all: ['js/*.js', '!js/*.min.js']
 		},
 
         // Generate git readme from readme.txt
@@ -78,7 +64,6 @@ module.exports = function(grunt) {
 					'!**/*.zip',
 					'!wp-assets/**',
 					'!package-lock.json',
-					'!nyp-logo.png',
 					'!screenshots/**',
 					'!.git/**',
 					'!**.md',
@@ -113,81 +98,6 @@ module.exports = function(grunt) {
 		  }
 		},
 
-		'github-release': {
-		  options: {
-		    repository: 'woocommerce/<%= pkg.name %>',
-		    release: {
-		      tag_name: '<%= pkg.version %>',
-		      name: '<%= pkg.version %>',
-		      body: 'Description of the release'
-		    }
-		  },
-		  files: {
-		    src: ['deploy/<%= pkg.version %>/<%= pkg.name %>.zip']
-		  }
-		},
-
-		// # Internationalization 
-
-		// Add text domain
-		addtextdomain: {
-			options: {
-	            textdomain: '<%= pkg.domain %>',    // Project text domain.
-	            updateDomains: [ '<%= pkg.domain %>', '<%= pkg.name %>', 'woocommerce' ]  // List of text domains to replace.
-	        },
-			target: {
-				files: {
-					src: ['*.php', '**/*.php', '!node_modules/**', '!build/**']
-				}
-			}
-		},
-
-		// Generate .pot file
-		makepot: {
-			target: {
-				options: {
-					domainPath: '/languages', // Where to save the POT file.
-					exclude: ['build/.*', 'svn/.*'], // List of files or directories to ignore.
-					mainFile: '<%= pkg.name %>.php', // Main project file.
-					potFilename: '<%= pkg.domain %>.pot', // Name of the POT file.
-					type: 'wp-plugin', // Type of project (wp-plugin or wp-theme).
-					potHeaders: {
-	                    'Report-Msgid-Bugs-To': 'https://woocommerce.com/my-account/tickets/'
-	                }
-				}
-			}
-		},
-
-		// bump version numbers
-		replace: {
-			Version: {
-				src: [
-					'readme.txt',
-					'readme.md',
-					'<%= pkg.name %>.php'
-				],
-				overwrite: true,
-				replacements: [
-					{ 
-						from: /\*\*Stable tag:\*\* '.*.'/m,
-						to: "*Stable tag:* '<%= pkg.version %>'"
-					},
-					{
-						from: /Stable tag:.*$/m,
-						to: "Stable tag: <%= pkg.version %>"
-					},
-					{ 
-						from: /Version:.*$/m,
-						to: "Version: <%= pkg.version %>"
-					},
-					{ 
-						from: /public \$version = \'.*.'/m,
-						to: "public $version = '<%= pkg.version %>'"
-					}
-				]
-			}
-		}
-
 	});
 
 	// makepot and addtextdomain tasks
@@ -195,10 +105,6 @@ module.exports = function(grunt) {
 
 	// Default task(s).
 	grunt.registerTask('default', ['jshint', 'uglify']);
-
-	grunt.registerTask('docs', ['wp_readme_to_markdown']);
-
-	grunt.registerTask('test', ['jshint', 'addtextdomain']);
 
 	grunt.registerTask('zip', ['clean', 'copy', 'compress']);
 

@@ -27,7 +27,7 @@ foreach ($files as $name => $file)
 		$filePath = $file->getRealPath();
 		$filePath = str_replace('\\','/',$filePath);//solved the repeated value of files with back slash :)
 		//ignore .git
-		if(strpos($filePath,'.git') !== false || strpos($filePath,'shortcode_text') !== false){
+		if(strpos($filePath,'.git') !== false || strpos($filePath,'shortcode_text') !== false || strpos($filePath,'node_modules') !== false ){
 			continue;
 		}
 		 $relativePath = $plugin_name.'/'.substr($filePath, strlen($rootPath) + 1);
@@ -50,8 +50,11 @@ if($zip->open($plugin_name.'.zip')){
 	   if(strpos($name_path,'\\') !== false)
 	   		$zip->deleteName($name_path);
 	}*/
-	var_dump($zip->deleteName($plugin_name.'/zipper_file.php'));//delete this current file too
-	var_dump($zip->deleteName($plugin_name.'/README.md'));//delete this current file too
+		$files_to_delete = ['zipper_file.php','README.md','package.json','Gruntfile.js','.gitignore','package-lock.json'];
+	for($i = 0; $i < count($files_to_delete); $i++){
+		echo "Deleting: ".$files_to_delete[$i]."...\n";
+		var_dump($zip->deleteName($plugin_name.'/'.$files_to_delete[$i]));//delete this current file too
+	}
 	$zip->close();
 	echo "necessary stuff deleted";
 }

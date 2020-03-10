@@ -4,6 +4,11 @@
  */
 Class ADM_RAT_Checkout{
 
+	/**
+	 * @var mixed
+	 */
+	private $request_value = null;
+
     /**
      * Construcdur :)
      */
@@ -20,13 +25,12 @@ Class ADM_RAT_Checkout{
 	 * @param WC_Order              $order
  	 */
 	public function add_request_tailor_data_to_order_items( $item, $cart_item_key, $values, $order ) {
-		var_dump($item);
 		$cart_item_data = adm_pk_woo_get_item_data($cart_item_key);
 		$request_value = isset( $cart_item_data['_adm_request_tailor'] ) ? trim( $cart_item_data['_adm_request_tailor'] ) : '';
 		if ( empty( $request_value ) ) {
 			return;
 		}
-		
+		$this->request_value = $request_value;
 		// Only add when its true.
 		if( $request_value === 'true' ){
 			//$cloth_type = '<span class="adm-cloth-type">'.$cart_item_data['_cloth_type'].'</span>';
@@ -45,8 +49,7 @@ Class ADM_RAT_Checkout{
 		 * @return 						bool
 		 */
 		add_filter( 'adm_pk_order_item_request_tailor', function( $value, $item, $cart_item_key ){
-			global $request_value;
-			$value = ( $request_value === 'true' ? true : false );
+			$value = ( $this->request_value === 'true' ? true : false );
 			return $value;
 		}, 10, 3 );
 

@@ -25,6 +25,11 @@ class ADM_RAT_REST extends WP_REST_Controller{
      */
     protected $rest_base = '/measurement/';
 
+	/**
+	 * @var mixed
+	 */
+	private $delete_request = null;
+
     public function __construct(){
         /*api calling */
         add_action( 'rest_api_init', array( $this, 'register_routes' ) );
@@ -54,12 +59,11 @@ class ADM_RAT_REST extends WP_REST_Controller{
         $wc_cart_session = adm_pk_serializer(sanitize_text_field( rawurldecode($_POST['c_s']) ), false); //deserialise again
         $p_id = $_POST['adm_product_id'];
 		$security = $_POST['security'];
-
+		$this->delete_request = $delete_request;
 		// Add filter to set request tailor to respective value.
 		add_filter( 'adm_pk_item_request_tailor', function( $value, $cart_item_data ){
-			global $delete_request;
 			//if its a delete request, set request tailor to false, else true
-			return ( $delete_request === 'true' ? 'false' : 'true' );
+			return ( $this->delete_request === 'true' ? 'false' : 'true' );
 		}, 10, 2 );
 
         // Calling some useful hommies in the cart_features.php file in main adimara measurement plugin :)
@@ -88,14 +92,16 @@ class ADM_RAT_REST extends WP_REST_Controller{
 						$_the_scripts .= "$('#_adm_rat-".$c_p_id."-".$security."-".$delete_request."').addClass('adm-measured-look');";
 					}
 					else{
-						$_the_scripts .= "$('#_adm_rat-".$c_p_id."-".$security."-".$delete_request."').removeClass('adm-measured-look');";
-						$_the_scripts .= "$('#_adm_rat-".$c_p_id."-".$security."-".$delete_request."').addClass('adm-not-measured-look');";	
+						//$_the_scripts .= "$('#_adm_rat-".$c_p_id."-".$security."-".$delete_request."').removeClass('adm-measured-look');";
+						//$_the_scripts .= "$('#_adm_rat-".$c_p_id."-".$security."-".$delete_request."').addClass('adm-not-measured-look');";	
 					}
 				}
 
             }
 			// Avoid repeating, so put outside the loop.
-			$_the_scripts .= "alert('".$_alert_content."');";	
+				$_the_scripts .= "$('#_adm_rat-".$p_id."-".$security."-".$delete_request."').removeClass('adm-not-measured-look');
+								$('#_adm_rat-".$p_id."-".$security."-".$delete_request."').addClass('adm-measured-look');
+								alert('".$_alert_content."');";
         }
 
         else{// Only update this item.
@@ -113,9 +119,8 @@ class ADM_RAT_REST extends WP_REST_Controller{
 						$_the_scripts .= "$('#_adm_rat-".$p_id."-".$security."-".$delete_request."').addClass('adm-measured-look');";
 					}
 					else{
-						$_the_scripts .= "$('#_adm_rat-".$p_id."-".$security."-".$delete_request."').removeClass('adm-measured-look');";
-						$_the_scripts .= "$('#_adm_rat-".$p_id."-".$security."-".$delete_request."').addClass('adm-not-measured-look');";
-					
+						//$_the_scripts .= "$('#_adm_rat-".$p_id."-".$security."-".$delete_request."').removeClass('adm-measured-look');";
+						//$_the_scripts .= "$('#_adm_rat-".$p_id."-".$security."-".$delete_request."').addClass('adm-not-measured-look');";
 					}
 					$_the_scripts .= "alert('".$_alert_content."');";
 					break;//no longer need, break
