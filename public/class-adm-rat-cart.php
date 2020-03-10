@@ -151,9 +151,9 @@ class ADM_RAT_Cart{
 			} )
 			.done( function( response ) {
 				$( '.adm-tailor-request-load' ).html( response );
+				window.location.replace( "<?php echo wc_get_cart_url(); ?>" );
 			} )
 			.fail( function( response ) {
-				$( '.adm-tailor-request-load' ).html( response );	
 				alert( "An error occured, please try again later or reload the page if the problem persists." );
 			})
 			.always( function( response ) {

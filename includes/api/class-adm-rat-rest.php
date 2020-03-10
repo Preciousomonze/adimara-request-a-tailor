@@ -67,9 +67,9 @@ class ADM_RAT_REST extends WP_REST_Controller{
 
 		// Now check if the apply to similar wasnt checked.
         $got_value = false;
-        $_the_scripts = 'Setting \"Request Tailor\" for all respective items has been set successfully!';
+        $_the_scripts = '';
         if( $_apply_to_all === 'true' ){// Update all.
-			$_alert_content = '';
+			$_alert_content = ( $delete_request === 'false' ? '\"Request Tailor\" for all respective items has been enabled successfully!' : '\"Request Tailor\" for all respective items has been disabled.' );
             foreach( $cart_items as $cart_item ){
                 $c_p_id = $cart_item['product_id'];
 				
@@ -83,8 +83,14 @@ class ADM_RAT_REST extends WP_REST_Controller{
 					$got_value = true;
 
 					// Update the button color for "enter measurement" and "request a tailor"
-					$_the_scripts .= "$('#_adm_rat-".$c_p_id."-".$security."-".$delete_request."').removeClass('adm-not-measured-look');";
-					$_the_scripts .= "$('#_adm_rat-".$c_p_id."-".$security."-".$delete_request."').addClass('adm-measured-look');";
+					if( $delete_request === 'false'){
+						$_the_scripts .= "$('#_adm_rat-".$c_p_id."-".$security."-".$delete_request."').removeClass('adm-not-measured-look');";
+						$_the_scripts .= "$('#_adm_rat-".$c_p_id."-".$security."-".$delete_request."').addClass('adm-measured-look');";
+					}
+					else{
+						$_the_scripts .= "$('#_adm_rat-".$c_p_id."-".$security."-".$delete_request."').removeClass('adm-measured-look');";
+						$_the_scripts .= "$('#_adm_rat-".$c_p_id."-".$security."-".$delete_request."').addClass('adm-not-measured-look');";	
+					}
 				}
 
             }
@@ -93,18 +99,25 @@ class ADM_RAT_REST extends WP_REST_Controller{
         }
 
         else{// Only update this item.
-			$_alert_content = 'Request Tailor for this item has been set successfully!';
+			$_alert_content = ( $delete_request === 'false' ? 'Request Tailor for this item has been enabled successfully!' : 'Request Tailor for this item has been disabled.' );
             foreach( $cart_items as $cart_item ){
 				if( $cart_item['product_id'] == $p_id ){//what we're looking for		
 					/* $cart_item_data,$product_id,$variation_id,$measure_vals,$unit,$apply_to,$cloth_type,$cart_session */
 					apply_filters( 'adm_rat_woocommerce_add_cart_item_data', $cart_item, $p_id, null, null, null, null, null, $wc_cart_session );
-					
+
 					$got_value = true;
-					
+
 					// Update the button color for "enter measurement" and "request a tailor"
-					$_the_scripts .= "$('#_adm_rat-".$p_id."-".$security."-".$delete_request."').removeClass('adm-not-measured-look');";
-					$_the_scripts .= "$('#_adm_rat-".$p_id."-".$security."-".$delete_request."').addClass('adm-measured-look');";
-					$_the_scripts .= "alert('".$alert_content."');";
+					if( $delete_request === 'false'){
+						$_the_scripts .= "$('#_adm_rat-".$p_id."-".$security."-".$delete_request."').removeClass('adm-not-measured-look');";
+						$_the_scripts .= "$('#_adm_rat-".$p_id."-".$security."-".$delete_request."').addClass('adm-measured-look');";
+					}
+					else{
+						$_the_scripts .= "$('#_adm_rat-".$p_id."-".$security."-".$delete_request."').removeClass('adm-measured-look');";
+						$_the_scripts .= "$('#_adm_rat-".$p_id."-".$security."-".$delete_request."').addClass('adm-not-measured-look');";
+					
+					}
+					$_the_scripts .= "alert('".$_alert_content."');";
 					break;//no longer need, break
                 }
             }
