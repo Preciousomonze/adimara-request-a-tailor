@@ -34,6 +34,7 @@ Class ADM_RAT_Checkout{
 			//done now add :)
 			$item->add_meta_data( __( '_request_tailor', ADM_RAT_TEXT_DOMAIN ), $value );
 		}
+		
 		// hook filter since request tailor has been in it
 		/**
 		 * A template like function which sets bool value on item for request tailor
@@ -45,9 +46,10 @@ Class ADM_RAT_Checkout{
 		 */
 		add_filter( 'adm_pk_order_item_request_tailor', function( $value, $item, $cart_item_key ){
 			global $request_value;
-			$value = $request_value;
+			$value = ( $request_value === 'true' ? true : false );
 			return $value;
 		}, 10, 3 );
+
 	}
 
 }
