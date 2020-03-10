@@ -11,7 +11,7 @@ class ADM_RAT_Cart{
 	private $rat_active_count = 0;
 	
 	/**
-	 * Keep account of request tailor items.
+	 * Keep account of items fit for "request tailor".
 	 * @var int
 	 */
 	private $rat_count = 0;
@@ -22,6 +22,7 @@ class ADM_RAT_Cart{
     public function __construct(){
 		add_action( 'adm_pk_after_popup', array( $this, 'item_data_script' ), 10, 2 );
 		add_filter( 'adm_pk_add_item_data', array( $this, 'add_item_data' ), 10, 2 );
+		// Woocommerce hook
 		add_action( 'woocommerce_cart_actions', array( $this, 'display_bulk_button_to_cart' ), 10 );
 	}
 
@@ -30,24 +31,27 @@ class ADM_RAT_Cart{
      * 
      * @param int         $user_id User ID being saved.
      * @param string      $load_address Type of address e.g. billing or shipping.
-     * @hook filter adm_pk_add_item_data;
+     * @hook filter 	  adm_pk_add_item_data;
 	 * @return array
      */
     public function add_item_data( $item_data, $cart_item ){
-        // Set Your Nonce
+        // Set Your Nonce.
         global $adm_pk_ajax_nonce;// the ajax nonce variable
         $ajax_nonce = wp_create_nonce( $adm_pk_ajax_nonce );
 		
 		$product_id = $cart_item['product_id'];
-        //check if the item has been measured already
-        $measured_class = 'adm-not-measured-look';
-        $measure_data = adm_pk_woo_get_item_data($cart_item['key']);
-		// some variables to affect html
-		$js_tailor_delete_request = 'false';
+		
+		// heck if the item has been measured already.
+        $measure_data = adm_pk_woo_get_item_data( $cart_item['key'] );
+		var_dump($measure_data);
+		// Some variables to affect html.
+		$measured_class = 'adm-not-measured-look';
+        $js_tailor_delete_request = 'false';
 		$rat_title = 'Request a tailor and skip entering measurement.';
 		$rat_btn_text = 'Request a Tailor';
 		++$this->rat_count;
-        if( isset($measure_data) && $measure_data['_adm_request_tailor'] === true ){
+		
+        if( isset($measure_data) && $measure_data['_adm_request_tailor'] === 'true' ){
             $measured_class = 'adm-measured-look';
 			$js_tailor_delete_request = 'true';
 			$rat_title = 'Delete your \"Request a tailor\" for this item.';
@@ -55,11 +59,13 @@ class ADM_RAT_Cart{
 			// increment
 			++$this->rat_active_count;
         }
+		
         $item_data[] = array(
 		    'key'     => __( 'adm_rat_btn', ADM_PK_TEXT_DOMAIN ),
 		    'value'   => '<a id="_adm_rat-'.$product_id.'-'.$ajax_nonce.'-'.$js_tailor_delete_request.'" href="#adm-rat-request" class="btn btn-feel adm-measure-btn '.$measured_class.'" title="'.$rat_title.'">'.$rat_btn_text.'</a>',
             'display' => '',
         );
+		
 		return $item_data;
     }
 	
@@ -112,7 +118,12 @@ class ADM_RAT_Cart{
 		function adm_rat_submit_tailor_request( product_id, nonce, cartRequestTailor = false, deleteRequest = "false"){
 			$cart_element = $( '.cart.woocommerce-cart-form__contents' );
 			$cart_element.addClass('adm-make-relative');
-			$cart_element.append('<div class="blanket center"><a href="#no-click" class="adm-nice-load-feel"><i class="fa fa-gear fa-spin fa-2x"></i></a> </div>');
+			$cart_element.append('<div class="adm-blanket blanket center"><a href="#no-click" class="adm-nice-load-feel"><i class="fa fa-gear fa-spin fa-2x"></i></a> </div>');
+			
+			// Append only if child element doesnt exist.
+			if( $cart_element.find( '.adm-tailor-request-load' ).length < 1 ){
+				$cart_element.append('<div class="adm-tailor-request-load"></div>');
+			}
 			//for the nice load stuff
 			$('.adm-nice-load-feel').click(function(e){
 				e.preventDefault();
@@ -138,14 +149,15 @@ class ADM_RAT_Cart{
 					'adm_remove_request': deleteRequest
 				}
 			} )
-			.done(function(response) {
-				$('#whole-to-load').html(response);
+			.done( function( response ) {
+				$( '.adm-tailor-request-load' ).html( response );
 			} )
-			.fail( function() {
+			.fail( function( response ) {
+				$( '.adm-tailor-request-load' ).html( response );	
 				alert( "An error occured, please try again later or reload the page if the problem persists." );
 			})
-			.always(function(response) {
-				$('.adm-measure-pop .blanket').remove();
+			.always( function( response ) {
+				$( '.adm-blanket' ).remove();
 				$cart_element.removeClass( 'adm-make-relative' );
 			});
 

@@ -89,7 +89,7 @@ final class ADM_RAT{
         }
 		//include for all
 		include_once( ADM_RAT_ABSPATH . 'includes/class-adm-rat-orders.php' );
-		
+
     }
     
     /**

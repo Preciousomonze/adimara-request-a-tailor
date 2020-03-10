@@ -35,15 +35,17 @@ Class ADM_RAT_Checkout{
 		// hook filter since request tailor has been initt
 		/**
 		 * A template like function which sets bool value on item for request tailor
+		 * @param mixed 				$value
 		 * @param WC_Order_Item_Product $item
 		 * @param string                $cart_item_key
 		 * @hook filter 				adm_pk_item_request_tailor
 		 * @return 						bool
 		 */
-		add_filter( 'adm_pk_item_request_tailor', function( $item, $cart_item_key ){
+		add_filter( 'adm_pk_order_item_request_tailor', function( $value, $item, $cart_item_key ){
 			global $request_value;
-			return $request_value;
-		}, 10, 2 );
+			$value = $request_value;
+			return $value;
+		}, 10, 3 );
 	}
 
 }
