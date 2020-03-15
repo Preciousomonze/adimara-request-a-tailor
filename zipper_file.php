@@ -18,11 +18,9 @@ $files = new RecursiveIteratorIterator(
     RecursiveIteratorIterator::LEAVES_ONLY
 );
 
-foreach ($files as $name => $file)
-{
+foreach ($files as $name => $file){
     // Skip directories (they would be added automatically)
-    if (!$file->isDir())
-    {
+    if (!$file->isDir()){
         // Get real and relative path for current file
 		$filePath = $file->getRealPath();
 		$filePath = str_replace('\\','/',$filePath);//solved the repeated value of files with back slash :)
@@ -41,16 +39,7 @@ $zip->close();
 echo "zipped\n";
 //now remove some stuff inside the zip file, no better way
 if($zip->open($plugin_name.'.zip')){
-	//var_dump($zip->deleteIndex(1));
-	//for some reason, that str_replace for file path still doesnt work online, so delete
-	//found out that its when i upload via wordpress plugin page, it does that backward slash duplication
-	/*for($i = 0; $i < $zip->numFiles; $i++) 
-	{   
-	   $name_path = $zip->getNameIndex($i);
-	   if(strpos($name_path,'\\') !== false)
-	   		$zip->deleteName($name_path);
-	}*/
-		$files_to_delete = ['zipper_file.php','README.md','package.json','Gruntfile.js','.gitignore','package-lock.json'];
+		$files_to_delete = ['zipper_file.php','README.md','package.json','Gruntfile.js','package-lock.json'];
 	for($i = 0; $i < count($files_to_delete); $i++){
 		echo "Deleting: ".$files_to_delete[$i]."...\n";
 		var_dump($zip->deleteName($plugin_name.'/'.$files_to_delete[$i]));//delete this current file too
