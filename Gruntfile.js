@@ -1,8 +1,7 @@
 //Gruntttttt :)
 module.exports = function(grunt) {
 
-	const sass = require('node-sass');
-  	require('load-grunt-tasks')(grunt);
+	require('load-grunt-tasks')(grunt);
 
 	// Project configuration.
 	grunt.initConfig({
@@ -106,9 +105,13 @@ module.exports = function(grunt) {
 	// Default task(s).
 	grunt.registerTask('default', ['jshint', 'uglify']);
 
+	grunt.registerTask('docs', ['wp_readme_to_markdown']);
+
+	grunt.registerTask('test', ['jshint']);
+
 	grunt.registerTask('zip', ['clean', 'copy', 'compress']);
 
-	grunt.registerTask('build', ['test', 'replace', 'uglify']);
+	grunt.registerTask('build', ['uglify']);
 
 	grunt.registerTask('release', ['build', 'zip', 'clean']);
 

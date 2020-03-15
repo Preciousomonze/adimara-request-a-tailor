@@ -1,15 +1,17 @@
 {
     "title": "Adimara Request a Tailor",
     "name": "adimara-request-a-tailor",
-    "description": "A WordPress Plugin Add-on for the Adimara measurement plugin, which helps in the creation of a button called \"Request Tailor Measurement\" placed beneath the "enter measurement". The RTM button will enable the customer skip the process of entering their measurements and go straight to payment.",
-    "author" : "Precious Omonze",
-    "main" : "Gruntfile.js",
-    "authors": [{
-        "name": "Precious Omonze (CodeXplorer)",
-        "email": "me@codexplorer.ninja",
-        "url": "https://codexplorer.ninja"
-    }],
-    "license": "GNU",
+    "description": "A WordPress Plugin Add-on for the Adimara measurement plugin, which helps in the creation of a button called \"Request Tailor Measurement\" placed beneath the \"enter measurement\". The RTM button will enable the customer skip the process of entering their measurements and go straight to payment.",
+    "author": "Precious Omonze",
+    "main": "Gruntfile.js",
+    "authors": [
+        {
+            "name": "Precious Omonze (CodeXplorer)",
+            "email": "me@codexplorer.ninja",
+            "url": "https://codexplorer.ninja"
+        }
+    ],
+    "license": "GPL-3.0",
     "repository": {
         "type": "git",
         "url": "https://github.com/Preciousomonze/adimara-request-a-tailor"
@@ -27,6 +29,8 @@
         "grunt-contrib-jshint": "~2.1.0",
         "grunt-contrib-uglify": "^4.0.1",
         "grunt-contrib-watch": "~1.1.0",
-        "grunt-newer": "~1.3.0"
+        "grunt-newer": "~1.3.0",
+        "load-grunt-tasks": "^5.1.0",
+        "jshint-stylish": "~2.2.1"
     }
-  }
+}
