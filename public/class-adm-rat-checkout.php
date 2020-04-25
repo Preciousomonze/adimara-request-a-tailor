@@ -14,6 +14,8 @@ Class ADM_RAT_Checkout{
      */
     public function __construct(){
 		add_action( 'woocommerce_checkout_create_order_line_item', array( $this, 'add_request_tailor_data_to_order_items' ), 10, 4 );
+
+		add_filter( 'woocommerce_gateway_description', array( $this, 'add_note_to_cod_payment' ), 10, 2 );
     }
     
 	/**
@@ -53,6 +55,34 @@ Class ADM_RAT_Checkout{
 			return $value;
 		}, 10, 3 );
 
+	}
+	
+	/**
+	 * Adds extra note to the Cash on Delivery method. 
+	 *
+	 * To display an extra note only for customers with request a tailor enabled
+	 *
+	 * @param WC_Order_Item_Product $item
+	 * @param string                $description
+	 * @param string                 $gateway_id
+	 * @param WC_Order              $order
+ 	 */	
+	public function add_note_to_cod_payment( $description, $gateway_id ) {
+		if( $gateway_id !== 'cod' ){
+			return $description;
+		}
+		
+		// It's COD, continue
+		foreach(WC()->cart->get_cart() as $cart_item ){
+            $item = adm_pk_woo_get_item_data($cart_item['key']);
+            $request_tailor = isset( $item['_adm_request_tailor'] ) ? $item['_adm_request_tailor'] : null;
+			
+			if ( $request_tailor === 'true' ){ // Found one, update description
+				$description .= apply_filters( 'adm_rat_cod_note', ' <strong>Only available for those requesting Tailor Measurement and 20% down payment required after measurement.</strong>', $description, $gateway_id );
+				break; // Break loop, no longer needed, saves time.
+			}
+		}
+		return $description;
 	}
 
 }
